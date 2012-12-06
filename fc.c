@@ -11,30 +11,19 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "help.h"
 
 void
 printCard(int cardNum, int side);
 
-void
-getCommand(void);
-
 int
 getCards(void);
-
-void
-clearin(void);
-
-void
-waitfornewline(void);
 
 void
 study(void);
 
 void
 multiplechoice(void);
-
-void
-clearscrn(void);
 
 void
 mascfem(void);
@@ -72,7 +61,7 @@ main(void) {
     int commandfound = 0;
     do {
         printf("(v%s)[main] ", VERSION);
-        getCommand();
+        getCommand(gCommand);
         if (strcmp(gCommand, "study") == 0) {
             study();
             commandfound = 1;
@@ -114,13 +103,6 @@ printCard(int cardNum, int side){
         printf("%s", gCards[cardNum].front);
     }
 	printf("\n\n");
-}
-
-void
-getCommand(void){
-	printf("What is your command: ");
-    scanf("%s", gCommand);
-	return;
 }
 
 int
@@ -191,22 +173,6 @@ getCards(void) {
     gCommand[0] = ' ';
     gNumCards = i + 1;
     return 0;
-}
-
-void
-clearin(void){
-	char c;
-	do {
-	    c = getchar();
-	} while (c != '\n');
-	return;
-}
-
-void
-waitfornewline(void){
-    char c=getchar();
-    while (c != '\n')
-        c=getchar();
 }
 
 void
@@ -287,12 +253,6 @@ multiplechoice(void){
     printf("You got %d out of %d correct.\n\n", score, x);
     waitfornewline();
     clearscrn();
-}
-
-void
-clearscrn(void) {
-    printf("\033[2J");
-    printf("\033[%d;%dH", 0, 0);
 }
 
 void
