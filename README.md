@@ -3,9 +3,6 @@ flashcards
 A simple C program to quiz the user with .txt files.
 The .txt files must be in this format:
 
->>Title
->>word:definition\n
->>word:definition\n
 >Title
 >
 >word:definition\n
