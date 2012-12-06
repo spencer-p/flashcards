@@ -215,7 +215,7 @@ multiplechoice(void){
         others[1] = 0;
         others[2] = 0;
         others[3] = 0;
-        num = x; //rand() % gNumCards;
+        num = rand() % gNumCards;
         clearscrn();
         printf("%d.) What does \'%s\' correspond to?\n\n", x + 1, gCards[num].front);
         key = (rand() % 4) + 97;
