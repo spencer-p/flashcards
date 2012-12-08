@@ -1,9 +1,9 @@
 #include <stdio.h>
 
 void
-getCommand(const char *dialog, char *command){
+getCommand(const char *dialog, char *string){
 	printf("%s", dialog);
-    scanf("%s", command);
+    scanf("%s", string);
 	return;
 }
 

@@ -1,5 +1,5 @@
 void
-getCommand(char *dialog, char *command);
+getCommand(char *dialog, char *string);
 
 void
 clearin(void);
