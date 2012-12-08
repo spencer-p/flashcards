@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 void
-getCommand(char *command){
-	printf("What is your command: ");
+getCommand(const char *dialog, char *command){
+	printf("%s", dialog);
     scanf("%s", command);
 	return;
 }

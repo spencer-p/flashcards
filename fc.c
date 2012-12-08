@@ -17,7 +17,7 @@ void
 printCard(int cardNum, int side);
 
 int
-getCards(void);
+getCards(char *path);
 
 void
 study(void);
@@ -30,6 +30,9 @@ mascfem(void);
 
 void
 fillintheblank(void);
+
+void
+learn(void);
 
 typedef struct card_t
 {
@@ -61,7 +64,7 @@ main(void) {
     int commandfound = 0;
     do {
         printf("(v%s)[main] ", VERSION);
-        getCommand(gCommand);
+        getCommand("What is your command: ", gCommand);
         if (strcmp(gCommand, "study") == 0) {
             study();
             commandfound = 1;
@@ -71,7 +74,10 @@ main(void) {
             commandfound = 1;
         }
         if (strcmp(gCommand, "getcards") == 0) {
-            getCards();
+            printf("Path to your .txt file: ");
+    		char path[128];
+    		scanf("%s", path);
+            getCards(path);
             commandfound = 1;
         }
         if (strcmp(gCommand, "mascfem") == 0) {
@@ -81,6 +87,10 @@ main(void) {
         if (strcmp(gCommand, "fitb") == 0) {
             fillintheblank();
             commandfound = 1;
+        }
+        if (strcmp(gCommand, "learn") == 0) {
+        	learn();
+        	commandfound = 1;
         }
         else if (commandfound == 0) {
             if (strcmp(gCommand, "quit") != 0) {
@@ -106,12 +116,9 @@ printCard(int cardNum, int side){
 }
 
 int
-getCards(void) {
+getCards(char *path) {
     for (int i = 0; i <= AMTOFCARDS; i++)
         memset(&gCards[i], 0, sizeof(card));
-    printf("Path to your .txt file: ");
-    char path[128];
-    scanf("%s", path);
     FILE *rawcards = fopen(path, "r");
     int i;
     if(rawcards != NULL){
@@ -416,5 +423,62 @@ fillintheblank(void) {
     printf("You got %d out of %d correct.\n\n", score, x);
     waitfornewline();
     clearscrn();
+    return;
+}
+
+void
+learn(void) {
+	int i;
+	int num;
+	char key[CARDBACK];
+	char answer[CARDBACK];
+    int tries;
+	int questions;
+	int score = 0;
+	printf("How many questions would you like to be asked? ");
+	scanf("%d", &questions);
+	clearin();
+	srand((unsigned int) time(NULL));
+	for (i = 0; i < questions; i++) {
+		num = rand() % gNumCards;
+		strncpy(key, gCards[num].back, CARDBACK);
+		clearscrn();
+		printf("%d.) What is \'%s?\'\n\n", i + 1, gCards[num].front);
+		for (tries = 0; tries <= 3; tries ++) {
+            int x = 0;
+            while (1) {
+                answer[x] = getc(stdin);
+                if (answer[x] == '\n') {
+                    answer[x] = '\0';
+                    break;
+                }
+                x++;
+            }
+            answer[x] = '\0';
+			if (strcmp(answer, key) == 0) {
+                printf("Correct!\n");
+                waitfornewline();
+                score++;
+                break;
+			}
+			if (strcmp(answer, "quit") == 0) {
+                printf("You got %d out of %d correct.\n", score, i);
+                waitfornewline();
+                clearscrn();
+                return;
+			}
+			if (strcmp(answer, key) != 0 && tries < 3) {
+                printf("You said \'%s\' Incorrect. Try again.\n", answer);
+			}
+			else if (tries == 3) {
+                printf("The answer was \"%s\"\nType it now for practice:\n", gCards[num].back);
+                scanf("%s", answer);
+                clearin();
+			}
+		}
+	}
+	printf("You got %d out of %d correct.\n", score, i);
+	waitfornewline();
+	clearscrn();
     return;
 }
