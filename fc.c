@@ -11,7 +11,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "help.h"
+#include "helpers.h"
 
 void
 printCard(int cardNum, int side);
