@@ -2,12 +2,11 @@
 
 
 /*
- * Returns true if value is in array of n values, else false.
+ * Returns 0 if value is in array of n values, else 1.
  */
 
-bool 
+int
 search(int value, int values[], int n);
-
 
 /*
  * Sorts array of n values.
