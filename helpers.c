@@ -1,37 +1,27 @@
 #include "helpers.h"
 
-#define waitfornewline clearin
-
-
 /*
  * Returns 0 if value is in array of n values, else 1.
  */
 
 int
-search(int value, int values[], int n) {
-    // TODO: re-implement as binary search
-    sort(values, n);
-    for (int i = 0; i < n; i++)
-    if (n == 1 && values[0] != value){
-		return false;
+binsearch(int value, int values[], int n) {
+	sort(values, n);
+	if (n == 1 && value == values[0])
+		return 0;
+	if (n == 1 && value != values[0])
+		return 1;
+	if (value > values[n/2]) {
+		if (binsearch(value, &values[n/2], n/2) == 0)
+			return 0;
 	}
-    if (value > values[n/2]) {
-    	for (int i = 0; i < n/2 + 1; i++) {
-    		values[i] = values[n/2 + i];
-    	}
-    	if (search(value, values, n/2 + 1))
-    		return true;
-    	else
-    		return false;
-    }
-    if (value < values[n/2]) {
-    	if (search(value, values, n/2))
-    		return true;
-    	else
-    		return false;
-    }
-    if (values[n/2] == value)
-    	return true;
+	else if (value < values[n/2]) {
+		if (binsearch(value, values, n/2) == 0)
+			return 0;
+	}
+	else if (value == values[n/2])
+		return 0;
+	return 1;
 }
 
 
@@ -49,8 +39,6 @@ sort(int values[], int n){
     	temp = values[i];
     	values[i] = values[highestVal];
     	values[highestVal] = temp;
-    }
-    for (int i = 0; i < n; i++) {
     }
     return;
 }
@@ -89,7 +77,7 @@ minVal(int values[], int n)
 }
 
 void
-getCommand(const char *dialog, char *string){
+getCommand(char *dialog, char *string){
 	printf("%s", dialog);
     scanf("%s", string);
 	return;
@@ -97,6 +85,13 @@ getCommand(const char *dialog, char *string){
 
 void
 clearin(void){
+    char c = getchar();
+    while (c != '\n')
+        c=getchar();
+}
+
+void
+waitfornewline(void){
     char c = getchar();
     while (c != '\n')
         c=getchar();

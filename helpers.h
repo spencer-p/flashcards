@@ -6,7 +6,7 @@
  */
 
 int
-search(int value, int values[], int n);
+binsearch(int value, int values[], int n);
 
 /*
  * Sorts array of n values.
