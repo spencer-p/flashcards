@@ -121,7 +121,9 @@ getCards(char *path) {
         memset(&gCards[i], 0, sizeof(card));
     FILE *rawcards = fopen(path, "r");
     int i;
+    time_t time1, time2;
     if(rawcards != NULL){
+    	time(time1);
         i = 0;
         char c;
         while((c = getc(rawcards)) != '\n'){
