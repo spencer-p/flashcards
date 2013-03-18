@@ -117,13 +117,13 @@ printCard(int cardNum, int side){
 
 int
 getCards(char *path) {
+    time_t time1, time2;
+    time(&time1);
     for (int i = 0; i <= AMTOFCARDS; i++)
         memset(&gCards[i], 0, sizeof(card));
     FILE *rawcards = fopen(path, "r");
     int i;
-    time_t time1, time2;
     if(rawcards != NULL){
-    	time(time1);
         i = 0;
         char c;
         while((c = getc(rawcards)) != '\n'){
@@ -177,10 +177,14 @@ getCards(char *path) {
     }
     else {
         printf("Could not find file \'%s.\'\n", path);
+        gCommand[0] = ' ';
+        return 1;
     }
     fclose(rawcards);
     gCommand[0] = ' ';
     gNumCards = i + 1;
+    time(&time2);
+    printf("[getcards] Loaded set \"%s\" (%.0f seconds)\n", deckTitle, difftime(time2, time1)); 
     return 0;
 }
 
@@ -430,56 +434,72 @@ fillintheblank(void) {
 
 void
 learn(void) {
-	int i;
-	int num;
-	char key[CARDBACK];
-	char answer[CARDBACK];
-    int tries;
-	int questions;
-	int score = 0;
-	printf("How many questions would you like to be asked? ");
-	scanf("%d", &questions);
-	clearin();
+    //i for loops, num is the number of the chosen card, score for questions right
+	int num, notlearned = gNumCards, learned[gNumCards];
+    for (int i = 0; i < gNumCards; i++) {
+        learned[i] = 0;
+    }
+
+    //key for what the answer is checked against, answer is user input
+	char key[CARDBACK], answer[CARDBACK];
 	srand((unsigned int) time(NULL));
-	for (i = 0; i < questions; i++) {
-		num = rand() % gNumCards;
-		strncpy(key, gCards[num].back, CARDBACK);
-		clearscrn();
-		printf("%d.) What is \'%s?\'\n\n", i + 1, gCards[num].front);
-		for (tries = 0; tries <= 3; tries ++) {
-            int x = 0;
-            while (1) {
-                answer[x] = getc(stdin);
-                if (answer[x] == '\n') {
-                    answer[x] = '\0';
-                    break;
-                }
-                x++;
-            }
-            answer[x] = '\0';
-			if (strcmp(answer, key) == 0) {
-                printf("Correct!\n");
-                waitfornewline();
-                score++;
+
+    clearin();
+
+    for (int i = 0; notlearned != 0; i++) {
+        //choose a card and copy it into key	
+        do {
+            num = rand() % gNumCards;
+        } while (learned[num] >= 2);
+        strncpy(key, gCards[num].back, CARDBACK);
+  
+   		clearscrn();
+  	    printf("%d of %d learned | this card correct %d times\n", gNumCards-notlearned, gNumCards, learned[num]);
+        printf("%d.) What is \'%s?\'\n\n", i + 1, gCards[num].front);
+        
+        //read an answer from the user, stopping when it reads a newline
+        int x = 0;
+        while (1) {
+        answer[x] = getc(stdin);
+            if (answer[x] == '\n') {
+                answer[x] = '\0';
                 break;
-			}
-			if (strcmp(answer, "quit") == 0) {
-                printf("You got %d out of %d correct.\n", score, i);
-                waitfornewline();
-                clearscrn();
-                return;
-			}
-			if (strcmp(answer, key) != 0 && tries < 3) {
-                printf("You said \'%s\' Incorrect. Try again.\n", answer);
-			}
-			else if (tries == 3) {
-                printf("The answer was \"%s\"\nType it now for practice:\n", gCards[num].back);
-                scanf("%s", answer);
-                clearin();
-			}
-		}
-	}
-	printf("You got %d out of %d correct.\n", score, i);
+            }
+            x++;
+        }
+        answer[x] = '\0';
+       
+        if(strcmp(answer, key) == 0) {
+            printf("Correct!\n");
+            learned[num]++;
+            if (learned[num] == 2) {
+                printf("You have learned this card!\n");
+                notlearned--;
+            }
+            waitfornewline();
+        } else if (strcmp(answer, "quit") == 0) {
+            return;
+        } else {
+            learned[num] = 0;
+            do {
+                printf("Not quite. The answer was \'%s.\'\nTry again:\n", key);
+                int x = 0;
+                while (1) {
+                    answer[x] = getc(stdin);
+                    if (answer[x] == '\n') {
+                        answer[x] = '\0';
+                        break;
+                    }
+                    x++;
+                }
+                answer[x] = '\0';
+            } while (strcmp(answer, key) != 0);
+            printf("Correct.\n");
+            waitfornewline();
+        }
+        clearscrn();
+    }
+	printf("You have learned everything!\n");
 	waitfornewline();
 	clearscrn();
     return;
