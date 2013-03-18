@@ -11,7 +11,11 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <ctype.h>
 #include "helpers.h"
+
+void
+help(void);
 
 void
 printCard(int cardNum, int side);
@@ -40,10 +44,11 @@ typedef struct card_t
     char back[128];
 } card;
 
-#define VERSION "1.3"
+#define VERSION "1.4"
 //1.1 lettered multiplechoice instead of numbered
 //1.2 refined getcards, no residual cards
 //1.3 fill in the blank has become usable
+//1.4 learn mode is usable. new help command.
 #define CARDFRONT 64
 #define CARDBACK 128
 #define AMTOFCARDS 128
@@ -65,6 +70,9 @@ main(void) {
     do {
         printf("(v%s)[main] ", VERSION);
         getCommand("What is your command: ", gCommand);
+        for (int i = 0; i < strlen(gCommand); i++) {
+            gCommand[i] = tolower(gCommand[i]);
+        }
         if (strcmp(gCommand, "study") == 0) {
             study();
             commandfound = 1;
@@ -92,13 +100,22 @@ main(void) {
         	learn();
         	commandfound = 1;
         }
+        if (strcmp(gCommand, "help") == 0) {
+            help();
+            commandfound = 1;
+        }
         else if (commandfound == 0) {
             if (strcmp(gCommand, "quit") != 0) {
-                printf("(v%s)[main] Command \"%s\" not found.\n", VERSION, gCommand);
+                printf("(v%s)[main] Command \"%s\" not found. Try 'help' if you need it.\n", VERSION, gCommand);
             }
         }
         commandfound = 0;
     } while (strcmp(gCommand, "quit") != 0);
+}
+
+void
+help(void) {
+    printf("\nGETCARDS: takes a path to data in a text file and reads it into the program's memory.\n\nSTUDY: prints out data. use n for next and f for flip.\n\nMULTIPLECHOICE: asks multiple choice questions.\n\nFITB: fill in the blank questions.\n\nLEARN: asks you to type in the definition of a word twice each. helps you totally learn definitions.\n\nQUIT: quits. can be used nearly anywhere.\n\n");
 }
 
 void
