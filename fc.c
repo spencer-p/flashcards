@@ -15,6 +15,9 @@
 #include "helpers.h"
 
 void
+lowercase(char *input);
+
+void
 help(void);
 
 void
@@ -70,9 +73,7 @@ main(void) {
     do {
         printf("(v%s)[main] ", VERSION);
         getCommand("What is your command: ", gCommand);
-        for (int i = 0; i < strlen(gCommand); i++) {
-            gCommand[i] = tolower(gCommand[i]);
-        }
+        lowercase(gCommand);
         if (strcmp(gCommand, "study") == 0) {
             study();
             commandfound = 1;
@@ -111,6 +112,13 @@ main(void) {
         }
         commandfound = 0;
     } while (strcmp(gCommand, "quit") != 0);
+}
+
+void
+lowercase(char *input) {
+    for (int i = 0; i < strlen(input); i++) {
+        input[i] = tolower(input[i]);
+    }
 }
 
 void
@@ -201,10 +209,10 @@ getCards(char *path) {
     gCommand[0] = ' ';
     gNumCards = i + 1;
     time(&time2);
-    printf("[getcards] Loaded set \"%s\" (%.0f seconds)\n", deckTitle, difftime(time2, time1)); 
+    printf("[getcards] Loaded set \"%s\" (%.0f seconds)\n", deckTitle, difftime(time2, time1));
     return 0;
 }
-
+    
 void
 study(void) {
     srand((unsigned int) time(NULL));
@@ -263,6 +271,7 @@ multiplechoice(void){
         }
         printf("\n");
         scanf("%c", &choice);
+        choice = tolower(choice);
         clearin();
         if (choice == 'q') {
             printf("You got %d out of %d correct.\n", score, x);
@@ -387,6 +396,7 @@ fillintheblank(void) {
         else if (1 == prob){
             strncpy(key, longer, 32);
         }
+        lowercase(key);
         strncpy(gCards[num].back, temp, CARDBACK);
         printf("%d.) Fill in the Blank\n\n%s = ", (x + 1), gCards[num].front);
         result = strtok(gCards[num].back, " ");
@@ -427,6 +437,7 @@ fillintheblank(void) {
         strncpy(gCards[num].back, temp, CARDBACK);
         printf("\n\n");
         scanf("%s", choice);
+        lowercase(choice);
         if (strcmp(choice, key) == 0) {
             printf("Correct!\n");
             score++;
@@ -469,6 +480,7 @@ learn(void) {
             num = rand() % gNumCards;
         } while (learned[num] >= 2);
         strncpy(key, gCards[num].back, CARDBACK);
+        lowercase(key);
   
    		clearscrn();
   	    printf("%d of %d learned | this card correct %d times\n", gNumCards-notlearned, gNumCards, learned[num]);
@@ -485,7 +497,8 @@ learn(void) {
             x++;
         }
         answer[x] = '\0';
-       
+        lowercase(answer);
+
         if(strcmp(answer, key) == 0) {
             printf("Correct!\n");
             learned[num]++;
@@ -510,6 +523,10 @@ learn(void) {
                     x++;
                 }
                 answer[x] = '\0';
+                lowercase(answer);
+                if (strcmp(answer, "quit") == 0) {
+                    return;
+                }
             } while (strcmp(answer, key) != 0);
             printf("Correct.\n");
             waitfornewline();
