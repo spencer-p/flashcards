@@ -38,3 +38,9 @@ waitfornewline(void);
 //clears screen
 void
 clearscrn(void);
+
+void
+strlower(char *input);
+
+void
+strupper(char *input);

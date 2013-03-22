@@ -102,3 +102,17 @@ clearscrn(void) {
     printf("\033[2J");
     printf("\033[%d;%dH", 0, 0);
 }
+
+void
+strlower(char *input) {
+    for (int i = 0; i < strlen(input); i++) {
+        input[i] = tolower(input[i]);
+    }
+}
+
+void
+strupper(char *input) {
+    for (int i = 0; i < strlen(input); i++) {
+        input[i] = toupper(input[i]);
+    }
+}

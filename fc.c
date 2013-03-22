@@ -15,9 +15,6 @@
 #include "helpers.h"
 
 void
-lowercase(char *input);
-
-void
 help(void);
 
 void
@@ -112,13 +109,6 @@ main(void) {
         }
         commandfound = 0;
     } while (strcmp(gCommand, "quit") != 0);
-}
-
-void
-lowercase(char *input) {
-    for (int i = 0; i < strlen(input); i++) {
-        input[i] = tolower(input[i]);
-    }
 }
 
 void
