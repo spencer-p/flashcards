@@ -70,7 +70,7 @@ main(void) {
     do {
         printf("(v%s)[main] ", VERSION);
         getCommand("What is your command: ", gCommand);
-        lowercase(gCommand);
+        strlower(gCommand);
         if (strcmp(gCommand, "study") == 0) {
             study();
             commandfound = 1;
@@ -202,7 +202,7 @@ getCards(char *path) {
     printf("[getcards] Loaded set \"%s\" (%.0f seconds)\n", deckTitle, difftime(time2, time1));
     return 0;
 }
-    
+
 void
 study(void) {
     srand((unsigned int) time(NULL));
@@ -386,7 +386,7 @@ fillintheblank(void) {
         else if (1 == prob){
             strncpy(key, longer, 32);
         }
-        lowercase(key);
+        strlower(key);
         strncpy(gCards[num].back, temp, CARDBACK);
         printf("%d.) Fill in the Blank\n\n%s = ", (x + 1), gCards[num].front);
         result = strtok(gCards[num].back, " ");
@@ -427,7 +427,7 @@ fillintheblank(void) {
         strncpy(gCards[num].back, temp, CARDBACK);
         printf("\n\n");
         scanf("%s", choice);
-        lowercase(choice);
+        strlower(choice);
         if (strcmp(choice, key) == 0) {
             printf("Correct!\n");
             score++;
@@ -457,21 +457,21 @@ learn(void) {
     for (int i = 0; i < gNumCards; i++) {
         learned[i] = 0;
     }
-
+    
     //key for what the answer is checked against, answer is user input
 	char key[CARDBACK], answer[CARDBACK];
 	srand((unsigned int) time(NULL));
-
+    
     clearin();
-
+    
     for (int i = 0; notlearned != 0; i++) {
-        //choose a card and copy it into key	
+        //choose a card and copy it into key
         do {
             num = rand() % gNumCards;
         } while (learned[num] >= 2);
         strncpy(key, gCards[num].back, CARDBACK);
-        lowercase(key);
-  
+        strlower(key);
+        
    		clearscrn();
   	    printf("%d of %d learned | this card correct %d times\n", gNumCards-notlearned, gNumCards, learned[num]);
         printf("%d.) What is \'%s?\'\n\n", i + 1, gCards[num].front);
@@ -479,7 +479,7 @@ learn(void) {
         //read an answer from the user, stopping when it reads a newline
         int x = 0;
         while (1) {
-        answer[x] = getc(stdin);
+            answer[x] = getc(stdin);
             if (answer[x] == '\n') {
                 answer[x] = '\0';
                 break;
@@ -487,8 +487,8 @@ learn(void) {
             x++;
         }
         answer[x] = '\0';
-        lowercase(answer);
-
+        strlower(answer);
+        
         if(strcmp(answer, key) == 0) {
             printf("Correct!\n");
             learned[num]++;
@@ -513,7 +513,7 @@ learn(void) {
                     x++;
                 }
                 answer[x] = '\0';
-                lowercase(answer);
+                strlower(answer);
                 if (strcmp(answer, "quit") == 0) {
                     return;
                 }
