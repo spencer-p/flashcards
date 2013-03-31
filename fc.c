@@ -197,7 +197,7 @@ getCards(char *path) {
     }
     fclose(rawcards);
     gCommand[0] = ' ';
-    gNumCards = i + 1;
+    gNumCards = i;
     time(&time2);
     printf("[getcards] Loaded set \"%s\" (%.0f seconds)\n", deckTitle, difftime(time2, time1));
     return 0;
@@ -343,6 +343,7 @@ fillintheblank(void) {
     long length2;
     char longest[32];
     char longer[32];
+    longer[0] = ' ';
     char nopunc[32];
     char end;
     char temp[CARDBACK];
@@ -351,6 +352,7 @@ fillintheblank(void) {
     scanf("%d", &questions);
     clearin();
     for (x = 0; x < questions; x++) {
+        longer[0] = ' ';
         clearscrn();
         num = rand() % gNumCards;
         strncpy(temp, gCards[num].back, CARDBACK);
@@ -442,7 +444,6 @@ fillintheblank(void) {
             clearin();
             scanf("%s", choice);
         }
-        longer[0] = ' ';
     }
     printf("You got %d out of %d correct.\n\n", score, x);
     waitfornewline();
