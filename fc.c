@@ -10,7 +10,6 @@
 #include <string.h>
 #include <time.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <ctype.h>
 #include "helpers.h"
 
@@ -38,6 +37,12 @@ fillintheblank(void);
 void
 learn(void);
 
+char *
+cardtext(int num, char side);
+
+int
+cardsize(char side);
+
 typedef struct card_t
 {
     char front[64];
@@ -57,6 +62,8 @@ card gCards[128];
 char deckTitle[64];
 int gNumCards = 0;
 char gCommand[32];
+int frontback = 0;
+//0 is for prompt with front. 1 is for prompt with back
 
 //gCards[0].front = "a";
 //strcpy (gCards[0].front, "a");
@@ -102,6 +109,16 @@ main(void) {
             help();
             commandfound = 1;
         }
+        if (strcmp(gCommand, "frontback") == 0){
+            if (frontback == 0) {
+                printf("Toggling to prompt with back.\n");
+                frontback = 1;
+            }
+            else if (frontback == 1) {
+                printf("Toggling to prompt with front.\n");
+                frontback = 0;
+            }
+        }
         else if (commandfound == 0) {
             if (strcmp(gCommand, "quit") != 0) {
                 printf("(v%s)[main] Command \"%s\" not found. Try 'help' if you need it.\n", VERSION, gCommand);
@@ -121,11 +138,11 @@ printCard(int cardNum, int side){
 	clearscrn();
     if (side == 1){
     	printf("%s, #%d (back)\n\n", deckTitle, cardNum + 1);
-        printf("%s", gCards[cardNum].back);
+        printf("%s", cardtext(cardNum, 'b'));
     }
     if (side == 0){
         printf("%s, #%d (front)\n\n", deckTitle, cardNum + 1);
-        printf("%s", gCards[cardNum].front);
+        printf("%s", cardtext(cardNum, 'f'));
     }
 	printf("\n\n");
 }
@@ -166,7 +183,7 @@ getCards(char *path) {
                     break;
                 default: {
                     if (0 == side) {
-                        if (j == CARDFRONT - 1) {
+                        if (j == cardsize('f') - 1) {
                             printf("Card #%d ran out of front space.\n", i);
                             gCards[i].front[j] = '\0';
                             side = 1;
@@ -176,7 +193,7 @@ getCards(char *path) {
                         }
                     }
                     if (1 == side) {
-                        if (j == CARDBACK - 1) {
+                        if (j == cardsize('b') - 1) {
                             printf("Card #%d ran out of back space.\n", i);
                             gCards[i].back[j] = '\0';
                             side = 0;
@@ -249,18 +266,18 @@ multiplechoice(void){
         others[3] = 0;
         num = rand() % gNumCards;
         clearscrn();
-        printf("%d.) What does \'%s\' correspond to?\n\n", x + 1, gCards[num].front);
+        printf("%d.) What does \'%s\' correspond to?\n\n", x + 1, cardtext(num, 'f'));
         key = (rand() % 4) + 97;
         for (i = 'a'; i <= 'd'; i++) {
             if (i == key) {
-                printf("(%c) %s\n", (char)i, gCards[num].back);
+                printf("(%c) %s\n", (char)i, cardtext(num, 'b'));
             }
             else if (i != key){
                 do {
                     random = rand() % gNumCards;
                 } while (random == num || random == others[0] || random == others[1] || random == others[2] || random == others[3]);
                 others[i-97] = random;
-                printf("(%c) %s\n", (char)i, gCards[random].back);
+                printf("(%c) %s\n", (char)i, cardtext(random, 'b'));
             }
         }
         printf("\n");
@@ -279,7 +296,7 @@ multiplechoice(void){
             waitfornewline();
         }
         else if (choice != key){
-        	printf("Incorrect. The answer was '%s'.\n", gCards[num].back);
+        	printf("Incorrect. The answer was '%s'.\n", cardtext(num, 'b'));
             waitfornewline();
         }
     }
@@ -303,11 +320,11 @@ mascfem(void) {
         others[1] = 0;
         num = rand() % gNumCards;
         clearscrn();
-        printf("Is \'%s\' masculine or feminine?\n\n", gCards[num].front);
-        if (strcmp(gCards[num].back, "masc") == 0 ) {
+        printf("Is \'%s\' masculine or feminine?\n\n", cardtext(num, 'f'));
+        if (strcmp(cardtext(num, 'b'), "masc") == 0 ) {
             key = 1;
         }
-        if (strcmp(gCards[num].back, "fem") == 0) {
+        if (strcmp(cardtext(num, 'b'), "fem") == 0) {
             key = 2;
         }
         printf("1.) masculine\n2.) feminine\n\n");
@@ -325,7 +342,7 @@ mascfem(void) {
             waitfornewline();
         }
         else if (atoi(&choice) != key){
-        	printf("Incorrect. %s is %s.\n", gCards[num].front, gCards[num].back);
+        	printf("Incorrect. %s is %s.\n", cardtext(num, 'f'), cardtext(num, 'b'));
             waitfornewline();
         }
     }
@@ -350,7 +367,7 @@ fillintheblank(void) {
     longer[0] = ' ';
     char nopunc[32];
     char end;
-    char temp[CARDBACK];
+    char temp[cardsize('b')];
     int questions;
     printf("How many questions would you like to be asked? ");
     scanf("%d", &questions);
@@ -359,10 +376,10 @@ fillintheblank(void) {
         longer[0] = ' ';
         clearscrn();
         num = rand() % gNumCards;
-        strncpy(temp, gCards[num].back, CARDBACK);
+        strncpy(temp, cardtext(num, 'b'), cardsize('b'));
         result = NULL;
         //puts first string in longest
-        result = strtok(gCards[num].back, " ;,:.?\\/");
+        result = strtok(cardtext(num, 'b'), " ;,:.?\\/");
         length = strlen(result);
         length2 = 0;
         strncpy(longest, result, 32);
@@ -393,9 +410,10 @@ fillintheblank(void) {
             strncpy(key, longer, 32);
         }
         strlower(key);
-        strncpy(gCards[num].back, temp, CARDBACK);
-        printf("%d.) Fill in the Blank\n\n%s = ", (x + 1), gCards[num].front);
-        result = strtok(gCards[num].back, " ");
+        printf("writing %s to %s\n", temp, cardtext(num, 'b'));
+        strncpy(cardtext(num, 'b'), temp, cardsize('b'));
+        printf("%d.) Fill in the Blank\n\n%s = ", (x + 1), cardtext(num, 'f'));
+        result = strtok(cardtext(num, 'b'), " ");
         while (result != NULL) {
             strncpy(nopunc, result, 32);
             end = nopunc[strlen(nopunc) - 1];
@@ -430,7 +448,7 @@ fillintheblank(void) {
             }
             result = strtok(NULL, " ");
         }
-        strncpy(gCards[num].back, temp, CARDBACK);
+        strncpy(cardtext(num, 'b'), temp, cardsize('b'));
         printf("\n\n");
         scanf("%s", choice);
         strlower(choice);
@@ -464,7 +482,7 @@ learn(void) {
     }
     
     //key for what the answer is checked against, answer is user input
-	char key[CARDBACK], answer[CARDBACK];
+	char key[cardsize('b')], answer[cardsize('b')];
 	srand((unsigned int) time(NULL));
     
     clearin();
@@ -474,12 +492,12 @@ learn(void) {
         do {
             num = rand() % gNumCards;
         } while (learned[num] >= 2);
-        strncpy(key, gCards[num].back, CARDBACK);
+        strncpy(key, cardtext(num, 'b'), cardsize('b'));
         strlower(key);
         
    		clearscrn();
   	    printf("%d of %d learned | this card correct %d times\n", gNumCards-notlearned, gNumCards, learned[num]);
-        printf("%d.) What is \'%s?\'\n\n", i + 1, gCards[num].front);
+        printf("%d.) What is \'%s?\'\n\n", i + 1, cardtext(num, 'f'));
         
         //read an answer from the user, stopping when it reads a newline
         int x = 0;
@@ -526,10 +544,55 @@ learn(void) {
             printf("Correct.\n");
             waitfornewline();
         }
-        clearscrn();
     }
 	printf("You have learned everything!\n");
 	waitfornewline();
 	clearscrn();
     return;
+}
+
+char *
+cardtext(int num, char side) {
+    switch(side) {
+        case 'f':
+            if (frontback == 0) {
+                return gCards[num].front;
+            }
+            if (frontback == 1) {
+                return gCards[num].back;
+            }
+            break;
+        case 'b':
+            if (frontback == 1) {
+                return gCards[num].front;
+            }
+            if (frontback == 0) {
+                return gCards[num].back;
+            }
+            break;
+    }
+    return 0;
+}
+
+int
+cardsize(char side) {
+    switch (side) {
+        case 'f':
+            if (frontback == 0) {
+                return CARDFRONT;
+            }
+            if (frontback == 1) {
+                return CARDBACK;
+            }
+            break;
+        case 'b':
+            if (frontback == 0) {
+                return CARDBACK;
+            }
+            if (frontback == 1) {
+                return CARDFRONT;
+            }
+            break;
+    }
+    return 0;
 }
