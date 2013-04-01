@@ -8,9 +8,8 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 #include <stdlib.h>
-#include <ctype.h>
+#include <time.h>
 #include "helpers.h"
 
 void
@@ -149,8 +148,6 @@ printCard(int cardNum, int side){
 
 int
 getCards(char *path) {
-    time_t time1, time2;
-    time(&time1);
     for (int i = 0; i <= AMTOFCARDS; i++)
         memset(&gCards[i], 0, sizeof(card));
     FILE *rawcards = fopen(path, "r");
@@ -215,8 +212,7 @@ getCards(char *path) {
     fclose(rawcards);
     gCommand[0] = ' ';
     gNumCards = i;
-    time(&time2);
-    printf("[getcards] Loaded set \"%s\" (%.0f seconds)\n", deckTitle, difftime(time2, time1));
+    printf("[getcards] Loaded set \"%s\"\n", deckTitle);
     return 0;
 }
 
