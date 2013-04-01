@@ -410,7 +410,6 @@ fillintheblank(void) {
             strncpy(key, longer, 32);
         }
         strlower(key);
-        printf("writing %s to %s\n", temp, cardtext(num, 'b'));
         strncpy(cardtext(num, 'b'), temp, cardsize('b'));
         printf("%d.) Fill in the Blank\n\n%s = ", (x + 1), cardtext(num, 'f'));
         result = strtok(cardtext(num, 'b'), " ");
