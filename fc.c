@@ -4,6 +4,7 @@
 //
 //  Created by Spencer Peterson on 10/26/12.
 //  Copyright (c) 2012 Spencer Peterson. All rights reserved.
+//  blah blah blah XCode's automatic comments
 //
 
 #include <stdio.h>
