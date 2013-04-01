@@ -1,5 +1,6 @@
 #include <stdio.h>
-
+#include <ctype.h>
+#include <string.h>
 
 /*
  * Returns 0 if value is in array of n values, else 1.
