@@ -224,6 +224,10 @@ study(void) {
 
 void
 multiplechoice(void){
+    if(gNumCards < 4) {
+        printf("Not enough cards for this.\n");
+        return;
+    }
     srand((unsigned int) time(NULL));
     clearin();
     int num;
@@ -247,15 +251,15 @@ multiplechoice(void){
         clearscrn();
         printf("%d.) What does \'%s\' correspond to?\n\n", x + 1, gCards[num].front);
         key = (rand() % 4) + 97;
-        for (i = 'a'; i < 'e'; i++) {
+        for (i = 'a'; i <= 'd'; i++) {
             if (i == key) {
                 printf("(%c) %s\n", (char)i, gCards[num].back);
             }
             else if (i != key){
                 do {
                     random = rand() % gNumCards;
-                } while (strcmp(gCards[random].back, gCards[num].back) == 0 || strcmp(gCards[random].back, gCards[others[0]].back) == 0 || strcmp(gCards[random].back, gCards[others[1]].back) == 0 || strcmp(gCards[random].back, gCards[others[2]].back) == 0 || strcmp(gCards[random].back, gCards[others[3]].back) == 0);
-                others[i] = random;
+                } while (random == num || random == others[0] || random == others[1] || random == others[2] || random == others[3]);
+                others[i-97] = random;
                 printf("(%c) %s\n", (char)i, gCards[random].back);
             }
         }
