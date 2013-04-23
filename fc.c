@@ -45,7 +45,7 @@ cardsize(char side);
 
 typedef struct card_t
 {
-    char front[64];
+    char front[128];
     char back[128];
 } card;
 
@@ -54,7 +54,7 @@ typedef struct card_t
 //1.2 refined getcards, no residual cards
 //1.3 fill in the blank has become usable
 //1.4 learn mode is usable. new help command.
-#define CARDFRONT 64
+#define CARDFRONT 128 
 #define CARDBACK 128
 #define AMTOFCARDS 128
 
@@ -121,7 +121,7 @@ main(void) {
         }
         else if (commandfound == 0) {
             if (strcmp(gCommand, "quit") != 0) {
-                printf("(v%s)[main] Command \"%s\" not found. Try 'help' if you need it.\n", VERSION, gCommand);
+                printf("(v%s)[main] Command \'%s\' not found. Try 'help' if you need it.\n", VERSION, gCommand);
             }
         }
         commandfound = 0;
@@ -492,7 +492,7 @@ learn(void) {
         strlower(key);
         
    		clearscrn();
-  	    printf("%d of %d learned | this card correct %d times\n", gNumCards-notlearned, gNumCards, learned[num]);
+  	    printf("%d of %d learned | this card correct %d time(s)\n", gNumCards-notlearned, gNumCards, learned[num]);
         printf("%d.) What is \'%s?\'\n\n", i + 1, cardtext(num, 'f'));
         
         //read an answer from the user, stopping when it reads a newline
