@@ -458,9 +458,11 @@ fillintheblank(void) {
             break;
         }
         else {
-            printf("Incorrect. The answer was \'%s.\' Type it again for practice:\n", key);
-            clearin();
-            scanf("%s", choice);
+            do {
+                printf("Incorrect. The answer was \'%s.\' Type it again for practice:\n", key);
+                clearin();
+                scanf("%s", choice);
+            } while (strcmp(choice, key) != 0);
         }
     }
     printf("You got %d out of %d correct.\n\n", score, x);
