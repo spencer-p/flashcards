@@ -23,4 +23,12 @@ If you want to be cool and have it everywhere, run
     
 This command will use sudo and compile the program into your /usr/local/bin/ directory under the name flashcards. Once it's there, you can run my program anywhere by simply typing flashcards.
 
-From there, type getcards and give it a path, then type study, multiplechoice, or fillintheblank to test yourself in a variety of ways. The string "quit" can be used almost anywhere to stop the current activity.
+Commands run from inside the program:
+* getcards - This loads a set of data from an inputted path. test.txt is an example included.
+* study - prints out the cards one at a time. n for next, f for flip, q for quit
+* multiplechoice - Is what it sounds like.
+* fitb - Fill In The Blank. It is what it sounds like.
+* quit - quits. durr.
+* help - prints out a list of commands
+* frontback - toggle being prompted with the front or back of a card
+* mascfem - a disaster of a mode that should be ignored
