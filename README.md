@@ -4,8 +4,11 @@ flashcards
 A simple C program to quiz the user with .txt files. The .txt files must be in this format:
 
 >Title
+
 >word:definition\n
+
 >word:definition\n
+
 : is the delimeter for definitions. \n is the delimeter for new words or phrases.
 
 The source allows for 128 different definitions, but that's easily modifiable.
