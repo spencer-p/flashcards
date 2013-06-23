@@ -87,7 +87,7 @@ main(void) {
             commandfound = 1;
         }
         if (strcmp(gCommand, "getcards") == 0) {
-            printf("Path to your .txt file: ");
+            printf("[getcards] Path to your .txt file: ");
     		char path[128];
     		scanf("%s", path);
             getCards(path);
@@ -182,7 +182,7 @@ getCards(char *path) {
                 default: {
                     if (0 == side) {
                         if (j == cardsize('f') - 1) {
-                            printf("Card #%d ran out of front space.\n", i);
+                            printf("[getcards] Card #%d ran out of front space.\n", i);
                             gCards[i].front[j] = '\0';
                             side = 1;
                         }
@@ -192,7 +192,7 @@ getCards(char *path) {
                     }
                     if (1 == side) {
                         if (j == cardsize('b') - 1) {
-                            printf("Card #%d ran out of back space.\n", i);
+                            printf("[getcards] Card #%d ran out of back space.\n", i);
                             gCards[i].back[j] = '\0';
                             side = 0;
                         }
@@ -206,7 +206,7 @@ getCards(char *path) {
         }
     }
     else {
-        printf("Could not find file \'%s.\'\n", path);
+        printf("[getcards] Could not find file \'%s.\'\n", path);
         gCommand[0] = ' ';
         return 1;
     }
